@@ -1,7 +1,9 @@
 package facci.pm.ta3.sqlite.trabajoautonomo3sqlite.database.entities;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
 import facci.pm.ta3.sqlite.trabajoautonomo3sqlite.database.helper.ShoppingElementHelper;
 import facci.pm.ta3.sqlite.trabajoautonomo3sqlite.database.model.ShoppingItem;
@@ -35,6 +37,16 @@ public class ShoppingItemDB {
 
     public void insertElement(String productName) {
         //TODO: Todo el código necesario para INSERTAR un Item a la Base de datos
+        // Gets the data repository in write mode
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        // Create a new map of values, where column names are the keys
+        ContentValues values = new ContentValues();
+        values.put(ShoppingElementEntry.TABLE_NAME, "entry");
+        values.put(ShoppingElementEntry.COLUMN_NAME_TITLE, "title");
+
+        // Insert the new row, returning the primary key value of the new row
+        long newRowId = db.insert(ShoppingElementEntry.TABLE_NAME, null, values);
     }
 
 
@@ -79,15 +91,46 @@ public class ShoppingItemDB {
 
     public void clearAllItems() {
         //TODO: Todo el código necesario para ELIMINAR todos los Items de la Base de datos
+        // Define 'where' part of query.
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        String selection = ShoppingElementEntry.COLUMN_NAME_TITLE + " LIKE ?";
+        // Specify arguments in placeholder order.
+        String[] selectionArgs = { "MyTitle" };
+        // Issue SQL statement.
+        int deleteAll = db.delete(ShoppingElementEntry.TABLE_NAME, null, null);
 
     }
 
     public void updateItem(ShoppingItem shoppingItem) {
         //TODO: Todo el código necesario para ACTUALIZAR un Item en la Base de datos
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        // New value for one column
+        String title = "MyNewTitle";
+        ContentValues values = new ContentValues();
+        values.put(ShoppingElementEntry.COLUMN_NAME_TITLE, "title");
+
+        // Which row to update, based on the title
+        String selection = ShoppingElementEntry.COLUMN_NAME_TITLE + " LIKE ?";
+        String[] selectionArgs = { "MyOldTitle" };
+
+        int count = db.update(
+                ShoppingElementEntry.TABLE_NAME,
+                values,
+                selection,
+                selectionArgs);
 
     }
 
     public void deleteItem(ShoppingItem shoppingItem) {
         //TODO: Todo el código necesario para ELIMINAR un Item de la Base de datos
+        // Define 'where' part of query.
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        String selection = ShoppingElementEntry.COLUMN_NAME_TITLE + " LIKE ?";
+        // Specify arguments in placeholder order.
+        String[] selectionArgs = { "MyTitle" };
+        // Issue SQL statement.
+        int delete = db.delete(ShoppingElementEntry.TABLE_NAME, selection, null);
+
     }
 }
